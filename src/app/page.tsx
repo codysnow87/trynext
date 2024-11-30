@@ -1,101 +1,99 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect } from 'react';
+
+interface Task {
+  id: number;
+  title: string;
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Testing out changes deployed to MAIN BRANCH</li>
-        </ol>
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [newTask, setNewTask] = useState('');
+  const [loading, setLoading] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // Fetch tasks from the API on load
+  useEffect(() => {
+    const fetchTasks = async () => {
+      setLoading(true);
+      const response = await fetch('/api/tasks');
+      const data: Task[] = await response.json();
+      setTasks(data);
+      setLoading(false);
+    };
+
+    fetchTasks();
+  }, []);
+
+  // Add a new task
+  const addTask = async () => {
+    if (!newTask.trim()) return;
+
+    const response = await fetch('/api/tasks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: newTask }),
+    });
+
+    if (response.ok) {
+      const addedTask: Task = await response.json();
+      setTasks([...tasks, addedTask]);
+      setNewTask('');
+    }
+  };
+
+  // Delete a task
+  const deleteTask = async (id: number) => {
+    const response = await fetch('/api/tasks', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+
+    if (response.ok) {
+      setTasks(tasks.filter(task => task.id !== id));
+    }
+  };
+
+  return (
+      <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+        <h1>Task Manager</h1>
+
+        <div>
+          <input
+              type="text"
+              placeholder="Enter a new task"
+              value={newTask}
+              onChange={(e) => setNewTask(e.target.value)}
+              style={{ padding: '10px', marginRight: '10px' }}
+          />
+          <button onClick={addTask} style={{ padding: '10px 20px' }}>Add Task</button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        {loading ? (
+            <p>Loading tasks...</p>
+        ) : (
+            <ul style={{ marginTop: '20px' }}>
+              {tasks.map(task => (
+                  <li key={task.id} style={{ marginBottom: '10px' }}>
+                    {task.title}
+                    <button
+                        onClick={() => deleteTask(task.id)}
+                        style={{
+                          marginLeft: '10px',
+                          padding: '5px 10px',
+                          color: 'white',
+                          background: 'red',
+                          border: 'none',
+                          cursor: 'pointer',
+                        }}
+                    >
+                      Delete
+                    </button>
+                  </li>
+              ))}
+            </ul>
+        )}
+      </div>
   );
 }
