@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import TimeDisplay from './components/TimeDisplay'
+
 
 interface Task {
   id: number;
@@ -56,7 +58,7 @@ export default function Home() {
   };
 
   return (
-      <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+      <div style={{padding: '20px', fontFamily: 'Arial, sans-serif', color: 'black'}}>
         <h1>Task Manager</h1>
 
         <div>
@@ -65,17 +67,17 @@ export default function Home() {
               placeholder="Enter a new task"
               value={newTask}
               onChange={(e) => setNewTask(e.target.value)}
-              style={{ padding: '10px', marginRight: '10px' }}
+              style={{padding: '10px', marginRight: '10px'}}
           />
-          <button onClick={addTask} style={{ padding: '10px 20px' }}>Add Task</button>
+          <button onClick={addTask} style={{padding: '10px 20px'}}>Add Task</button>
         </div>
 
         {loading ? (
             <p>Loading tasks...</p>
         ) : (
-            <ul style={{ marginTop: '20px' }}>
+            <ul style={{marginTop: '20px'}}>
               {tasks.map(task => (
-                  <li key={task.id} style={{ marginBottom: '10px' }}>
+                  <li key={task.id} style={{marginBottom: '10px'}}>
                     {task.title}
                     <button
                         onClick={() => deleteTask(task.id)}
@@ -94,6 +96,12 @@ export default function Home() {
               ))}
             </ul>
         )}
+
+        <TimeDisplay/>
+
       </div>
-  );
+
+
+)
+  ;
 }
