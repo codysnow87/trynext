@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Styles */
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: black;
+  background-color: white;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: black;
+  text-decoration: inherit;
+}
+
+body {
+  margin: 0; 
+  min-width: 320px;
+  min-height: 100vh; 
+}
+
+#root {
+  max-width: 100vw;
+  margin: 0 auto;
+  padding: 0; 
+}
+
+.children {
+  margin: 40px 20px 40px 20px;
+  width: 100vw;
+}
+
+.use-automation-zoom-in {
+  animation: automation-zoom-in 0.5s;
+}
+
+@keyframes automation-zoom-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.event-blue {
+  background-color: #3498db !important;
+}
+
+.event-red {
+  background-color: #e74c3c !important;
+}
+
+.event-green {
+  background-color: #2ecc71 !important;
+}
+
+.event-yellow {
+  background-color: #f39c12 !important;
+}

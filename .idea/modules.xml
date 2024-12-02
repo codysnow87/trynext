@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/trynext.iml" filepath="$PROJECT_DIR$/.idea/trynext.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/esol-resources-platform.iml" filepath="$PROJECT_DIR$/.idea/esol-resources-platform.iml" />
     </modules>
   </component>
 </project>
